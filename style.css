@@ -1,0 +1,325 @@
+/* ------------------------------
+    GLOBAL STYLES
+------------------------------ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    color: #fff;
+    background-color: #0f0f0f; /* Fallback background color */
+}
+
+/* ------------------------------
+    NAVIGATION BAR
+------------------------------ */
+header {
+    background-color: #1c1c1c;
+    padding: 1rem 2rem;
+}
+
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo img {
+    max-height: 50px;
+    width: auto;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+}
+
+    .nav-links li a {
+        text-decoration: none;
+        color: #fff;
+        font-weight: 500;
+        transition: color 0.3s ease;
+    }
+
+        .nav-links li a:hover {
+            color: #cfcfcf;
+        }
+
+.stream-count {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+/* ------------------------------
+    HERO SECTION
+------------------------------ */
+.hero {
+    position: relative; /* Ensure this is set */
+    height: 60vh;
+    background: url("images/background.jpg") no-repeat center center/cover;
+    /* ... rest of existing flex properties ... */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6); /* Dark overlay to make text readable */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+}
+
+.hero-title {
+    margin-top: 2rem;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+.hero-content {
+    /* Ensure the content is centered within the hero */
+    text-align: center;
+    padding: 2rem;
+}
+
+/* Base style for all stream buttons (applies common layout, shape, and removes underline) */
+a.stream-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+    margin-top: 5px;
+    /* Common styling and shape */
+    font-size: 1.1em;
+    padding: 10px 20px;
+    text-decoration: none; /* Removes the underline */
+    border-radius: 5px; /* Ensures rounded corners */
+    font-weight: bold;
+    color: white; /* Default text color */
+    width: 100%;
+    max-width: 200px;
+    /* BACKGROUND IS NOT SET HERE */
+}
+
+/* Specific Twitch button styling (Purple) */
+.streamer a.twitch-button {
+    background-color: #9146FF;
+    color: white;
+}
+
+/* Specific Kick button styling (Green) with !important for permanent override */
+.streamers .streamer a.kick-button {
+    background-color: #53FC18 !important; /* Forces green */
+    color: #000000 !important; /* Forces black text */
+}
+
+    .streamers .streamer a.kick-button:hover {
+        background-color: #44CC12 !important;
+    }
+
+/* Style for the logo icon inside the button */
+.logo-icon {
+    height: 1.2em;
+    width: auto;
+    margin-right: 8px;
+}
+
+/* Special class to test color override */
+.kick-only-button {
+    /* Copying essential layout styles from a.stream-button */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin-bottom: 10px !important;
+    margin-top: 5px !important;
+    font-size: 1.1em !important;
+    padding: 10px 20px !important;
+    text-decoration: none !important;
+    border-radius: 5px !important;
+    font-weight: bold !important;
+    width: 100% !important;
+    max-width: 200px !important;
+}
+
+/* ------------------------------
+    HEADER FIX WITHIN HERO
+------------------------------ */
+.top-header {
+    /* Absolute positioning locks it to the top-left of the .hero container */
+    position: absolute;
+    top: 0;
+    left: 0;
+    /* Add padding to move it away from the edge */
+    padding: 20px;
+    /* Ensures it sits above other content */
+    z-index: 10;
+}
+
+    /* Ensure the logo image itself stays at a reasonable size */
+    .top-header .logo img {
+        max-height: 80px; /* Adjust as needed */
+        width: auto;
+    }
+
+
+/* ------------------------------
+    STREAMER PROFILES
+------------------------------ */
+.streamers { /* Added styles for the container holding both streamers */
+    display: flex;
+    justify-content: center;
+    gap: 50px; /* Space between the two streamer profiles */
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.streamer { /* Added styles for the individual streamer block */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 200px;
+}
+
+.streamer-container {
+    display: flex;
+    gap: 2rem;
+}
+
+.streamer-profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.profile-pic {
+    width: 100px;
+    height: 100px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    margin-bottom: 0.5rem;
+}
+
+.live-badge {
+    background-color: #ff0000;
+    color: #fff;
+    padding: 0.2rem 0.5rem;
+    font-size: 0.8rem;
+    border-radius: 0.25rem;
+    font-weight: bold;
+}
+
+/* ------------------------------
+    SECONDARY NAV BELOW HERO
+------------------------------ */
+.secondary-nav {
+    background-color: #2b2b2b;
+}
+
+    .secondary-nav ul {
+        display: flex;
+        align-items: center;
+        list-style: none;
+        justify-content: center;
+        gap: 2rem;
+        padding: 1rem 0;
+    }
+
+    .secondary-nav a {
+        color: #fff;
+        text-decoration: none;
+        font-weight: 500;
+        position: relative;
+    }
+
+        .secondary-nav a.active {
+            color: #a083f6; /* Highlight color for active link */
+        }
+
+.arrow-down {
+    font-size: 0.8rem;
+    margin-left: 0.3rem;
+}
+
+/* ------------------------------
+    ABOUT US SECTION
+------------------------------ */
+.about-us {
+    padding: 3rem 2rem;
+    background-color: #1c1c1c;
+    text-align: center;
+}
+
+    .about-us h2 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    .about-us p {
+        max-width: 700px;
+        margin: 0 auto;
+        line-height: 1.6;
+        font-size: 1rem;
+    }
+
+/* ------------------------------
+    BUTTON STYLING (NEW & UPDATED)
+------------------------------ */
+
+/* Base style for all stream buttons (applies to both Twitch and Kick) */
+a.stream-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+    margin-top: 5px;
+    /* Common styling */
+    font-size: 1.1em;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    color: white;
+    width: 100%;
+    max-width: 200px;
+    /* Background color is REMOVED from the base class */
+}
+
+/* Specific Twitch button styling */
+.streamer a.twitch-button {
+    background-color: #9146FF; /* Twitch purple */
+    color: white;
+}
+
+/* New CSS for the Kick button (Green) - Increased Specificity */
+.streamers .streamer a.kick-button {
+    /* Kick's primary brand color is a bright green */
+    background-color: #53FC18 !important; /* Added !important as a safety override */
+    color: #000000 !important; /* Ensure black text */
+}
+
+    /* Hover effect for the Kick button - Increased Specificity */
+    .streamers .streamer a.kick-button:hover {
+        background-color: #44CC12 !important; /* Slightly darker green on hover */
+    }
+
+/* Style for the logo icon inside the button */
+.logo-icon {
+    height: 1.2em; /* Makes the logo height match the text size */
+    width: auto;
+    margin-right: 8px; /* Adds space between the logo and the text */
+}
+
+/* --- END OF BUTTON STYLING --- */
