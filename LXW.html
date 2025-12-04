@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lethal x Wolf - Content Creators | Stream Schedule & Community</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles to mimic the original theme and structure, optimized for Tailwind */
+        :root {
+            --primary-color: #9c00b0; /* A vibrant purple */
+            --secondary-color: #0d0d0d; /* Dark background */
+            --accent-color: #ff00ff; /* Bright magenta for highlights/status */
+            --twitch-color: #6441a5;
+            --kick-color: #00d65b;
+        }
+
+        /* Basic styling for the body and fonts */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--secondary-color);
+            color: white;
+            scroll-behavior: smooth;
+        }
+
+        /* Hero Background Mimicry */
+        .hero-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0,0,0,0.8), rgba(156, 0, 176, 0.4)), url('https://placehold.co/1920x1080/0d0d0d/ff00ff?text=Lethal+X+Wolf+Background') center/cover no-repeat;
+            z-index: -1;
+            filter: brightness(0.7);
+        }
+
+        /* Custom Streamer Section (from original files) */
+        .streamer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .avatar-container {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            margin-bottom: 0.5rem;
+        }
+
+        .avatar {
+            border-radius: 50%;
+            border: 3px solid var(--primary-color);
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .status-indicator {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            border: 2px solid var(--secondary-color);
+        }
+
+        .status-indicator.offline {
+            background-color: #666;
+        }
+
+        .status-indicator.live {
+            background-color: #e82c5e; /* Twitch Red */
+            box-shadow: 0 0 10px var(--accent-color);
+        }
+
+        /* Navigation custom style for active/hover states */
+        /* REMOVED: .main-nav a.active */
+        /* REMOVED: .main-nav a:hover */
+
+        /* Floating Menu Button Styles */
+        #floating-menu-button {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            z-index: 50; /* Above all content */
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        /* Full Screen Menu Overlay Styles */
+        #menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(13, 13, 13, 0.95); /* Dark semi-transparent background */
+            z-index: 49; /* Below the button */
+            display: none; /* Controlled by JavaScript */
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            overflow-y: auto;
+        }
+
+        #menu-overlay.open {
+            display: flex;
+            opacity: 1;
+        }
+        
+        /* Table styling for schedule */
+        .schedule-table th, .schedule-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .schedule-table th {
+            background-color: rgba(156, 0, 176, 0.2);
+        }
+
+        /* Stream Cards */
+        .stream-card iframe {
+            width: 100%;
+            max-width: 800px;
+            height: 300px;
+            margin: 1rem 0;
+            border-radius: 0.5rem;
+        }
+        .stream-card .chat-iframe {
+            height: 400px;
+        }
+
+        /* Responsive Clip Container (from home.html) */
+        .clips-container {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            margin-top: 1rem;
+        }
+        .clips-container iframe {
+            width: 100%;
+            height: 300px;
+        }
+
+        /* Community/Social Media links */
+        .social-link-card {
+            background-color: #1a1a1a;
+            border: 1px solid var(--primary-color);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .social-link-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(156, 0, 176, 0.5);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <!-- FLOATING MENU BUTTON (FAB) -->
+    <button id="floating-menu-button" 
+            class="p-4 bg-primary-color rounded-full shadow-2xl hover:bg-accent-color transition duration-300 transform hover:scale-110"
+            aria-label="Toggle Menu">
+        <!-- Hamburger Icon (Menu closed) or Close Icon (Menu open) -->
+        <svg id="menu-icon-open" class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+        </svg>
+        <svg id="menu-icon-close" class="w-6 h-6 text-white hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+    </button>
+    
+    <!-- FULL SCREEN MENU OVERLAY -->
+    <div id="menu-overlay" class="flex flex-col items-center justify-center">
+        <nav class="flex flex-col space-y-8 text-center">
+            <a href="#home" class="text-4xl font-bold text-white hover:text-primary-color transition duration-200 menu-link">Home</a>
+            <a href="#schedule" class="text-4xl font-bold text-white hover:text-primary-color transition duration-200 menu-link">Schedule</a>
+            <a href="#community" class="text-4xl font-bold text-white hover:text-primary-color transition duration-200 menu-link">Community</a>
+            <a href="#streams" class="text-4xl font-bold text-white hover:text-primary-color transition duration-200 menu-link">Streams</a>
+        </nav>
+    </div>
+
+    <!-- HERO SECTION (HOME) -->
+    <section id="home" class="hero relative h-screen flex flex-col justify-between pt-8 pb-16 px-4 md:px-8">
+        <div class="hero-background absolute inset-0 z-0"></div>
+        <div class="hero-content relative z-10 flex flex-col items-center text-center">
+
+            <!-- Logo -->
+            <header class="top-header w-full flex justify-center mb-8">
+                <div class="logo w-40 md:w-56">
+                    <!-- Placeholder for logo image -->
+                    <img src="https://placehold.co/200x60/9c00b0/ffffff?text=Lethal+X+Wolf" alt="Lethal x Wolf Logo" class="w-full h-auto rounded-lg shadow-2xl">
+                </div>
+            </header>
+
+            <!-- Streamers Status -->
+            <div class="streamers flex space-x-8 mb-10">
+                <div class="streamer">
+                    <div class="avatar-container">
+                        <img src="https://placehold.co/80x80/6441a5/ffffff?text=Wolf" alt="Wolf Poe" class="avatar">
+                        <div class="status-indicator offline" id="wolf-status"></div>
+                    </div>
+                    <a href="https://twitch.tv/wolf_poe" target="_blank" class="text-sm font-semibold mt-1 hover:text-accent-color transition duration-300">Wolf_Poe</a>
+                </div>
+
+                <div class="streamer">
+                    <div class="avatar-container">
+                        <img src="https://placehold.co/80x80/6441a5/ffffff?text=Joker" alt="Lethal x Joker" class="avatar">
+                        <div class="status-indicator offline" id="joker-status"></div>
+                    </div>
+                    <a href="https://twitch.tv/lethalxjoker" target="_blank" class="text-sm font-semibold mt-1 hover:text-accent-color transition duration-300">LethalXJoker</a>
+                </div>
+            </div>
+
+            <!-- Hero Heading -->
+            <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-4 text-shadow-lg">Content Creators - Chaos Contributors</h1>
+            <p class="text-xl md:text-2xl text-gray-300 max-w-2xl">We're gamers, streamers, and chaos contributors bringing you hilarious moments, intense gameplay, and an awesome community. Dive into the madness with us!</p>
+            
+            <!-- Discord CTA (from home.html) -->
+            <div class="mt-8 discord-cta">
+              <a href="https://discord.gg/aHC5Su85Cq" class="discord-button px-6 py-3 bg-indigo-600 rounded-lg text-lg font-bold shadow-xl hover:bg-indigo-700 transition duration-300 transform hover:scale-105">Join Our Discord Community!</a>
+            </div>
+        </div>
+
+        <!-- Countdown (from home.html) -->
+        <div class="relative z-10 w-full text-center p-4 bg-gray-900/50 rounded-lg backdrop-blur-sm mt-auto">
+            <h3 class="text-xl font-semibold mb-2 text-primary-color">Next Stream Starts In:</h3>
+            <div id="countdown-timer" class="text-3xl font-mono tracking-wider text-accent-color">Loading...</div>
+            <a href="#schedule" class="text-sm text-gray-400 hover:text-primary-color mt-2 inline-block menu-link">Full Schedule &rarr;</a>
+        </div>
+    </section>
+
+    <!-- REMOVED: Main Navigation Bar -->
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-24">
+
+        <!-- SCHEDULE SECTION -->
+        <section id="schedule" class="schedule-section">
+            <h2 class="text-4xl font-bold mb-8 text-primary-color border-b-2 border-primary-color pb-2">Our Streaming Schedules</h2>
+            <p class="text-lg mb-8 text-gray-300">Check out our weekly schedule to see when we are typically live! All times are adjusted to your local timezone.</p>
+            
+            <div class="overflow-x-auto shadow-2xl rounded-lg">
+                <table class="schedule-table min-w-full divide-y divide-gray-700 bg-gray-800 rounded-lg">
+                    <thead>
+                        <tr>
+                            <th class="text-left text-sm font-semibold uppercase tracking-wider rounded-tl-lg">Day</th>
+                            <th class="text-left text-sm font-semibold uppercase tracking-wider">Wolf Poe</th>
+                            <th class="text-left text-sm font-semibold uppercase tracking-wider rounded-tr-lg">Lethal x Joker</th>
+                        </tr>
+                    </thead>
+                    <tbody id="schedule-body" class="divide-y divide-gray-700">
+                        <tr><td colspan="3" class="text-center py-4 text-gray-400">Loading Schedule...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p id="timezone-note" class="text-sm mt-4 text-gray-500"></p>
+        </section>
+        
+        <!-- STREAMS SECTION (Combined content from streams.html) -->
+        <section id="streams" class="streams-section">
+            <h2 class="text-4xl font-bold mb-8 text-primary-color border-b-2 border-primary-color pb-2">Live Streams & Chat</h2>
+            <p class="text-lg mb-6 text-gray-300">Check out our streams! Even chat here if you'd like! (For the best experience and to earn Channel Points, please watch directly on Twitch/Kick.)</p>
+
+            <!-- Twitch/Kick Buttons (Requested to be at the top of the Streams page) -->
+            <div class="flex flex-col sm:flex-row justify-center gap-4 mb-12 p-4 bg-gray-900 rounded-xl shadow-inner">
+                <a href="https://twitch.tv/wolf_poe" target="_blank" class="flex items-center justify-center space-x-2 px-6 py-3 rounded-full font-bold shadow-lg transition duration-300 transform hover:scale-105" style="background-color: var(--twitch-color);">
+                    <!-- Inline SVG for Twitch Icon -->
+                    <svg class="w-5 h-5" fill="white" viewBox="0 0 24 24"><path d="M11.571 6.075l5.05 5.05L13.25 14.496l1.01 1.01 4.75-4.75V19H5V3h12.518L11.571 6.075zM19 12.496l-2.001 2.001-1.01-1.01 2.001-2.001 1.01 1.01zM11.571 6.075l5.05 5.05-5.05 5.05-1.01-1.01 5.05-5.05-5.05-5.05 1.01-1.01zM19 15.518V19H5V3h14v9.518z"/></svg>
+                    <span>Watch on Twitch</span>
+                </a>
+                <a href="https://kick.com/wolf-poe" target="_blank" class="flex items-center justify-center space-x-2 px-6 py-3 rounded-full font-bold shadow-lg transition duration-300 transform hover:scale-105" style="background-color: var(--kick-color);">
+                    <!-- Inline SVG for Kick Icon (a stylized K) -->
+                    <svg class="w-5 h-5" fill="white" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm1.611 15.333H9.423v-2.015h3.407l-1.92-3.142-1.487 2.015H6.944L9.8 11.233 7.828 7.667h2.008l1.498 2.871 1.705-2.871h1.975l-2.822 4.09 3.064 4.343z"/></svg>
+                    <span>Watch on Kick</span>
+                </a>
+            </div>
+
+            <!-- Streamer Cards for embeds -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                
+                <!-- Wolf Poe Stream -->
+                <article class="stream-card bg-gray-800 p-6 rounded-xl shadow-2xl">
+                    <h3 class="text-2xl font-semibold mb-4 text-accent-color">Wolf_Poe</h3>
+                    <p class="text-sm text-gray-400 mb-4">⚠️ UNCENSORED HUMOR ⚠️ I stream all sorts of games, mostly multiplayer. Here to have a blast! Come join chat and be yourself, everyone is welcome! Don't forget to drop a follow and maybe even Sub.</p>
+
+                    <div class="flex flex-col space-y-6">
+                        <h4 class="text-xl font-medium text-gray-300">Twitch</h4>
+                        <!-- Twitch Player Embed -->
+                        <iframe src="https://player.twitch.tv/?channel=wolf_poe&parent=lethalxwolf.live" class="rounded-lg shadow-xl" height="250" allowfullscreen></iframe>
+                        <!-- Twitch Chat Embed -->
+                        <iframe src="https://www.twitch.tv/embed/wolf_poe/chat?parent=lethalxwolf.live&darkpopout" class="chat-iframe rounded-lg shadow-xl" height="375"></iframe>
+                        
+                        <h4 class="text-xl font-medium text-gray-300">Kick</h4>
+                        <!-- Kick Player Embed -->
+                        <iframe src="https://player.kick.com/wolf-poe" class="rounded-lg shadow-xl" height="300" allowfullscreen></iframe>
+                    </div>
+                </article>
+
+                <!-- LethalXJoker Stream -->
+                <article class="stream-card bg-gray-800 p-6 rounded-xl shadow-2xl">
+                    <h3 class="text-2xl font-semibold mb-4 text-accent-color">LethalXJoker</h3>
+                    <p class="text-sm text-gray-400 mb-4">Welcome! I'm LethalJoker, a Father, Husband (LethalHarley) and gamer, Affiliate of KineticHosting. Here to share thrilling gameplay, jump scares, and lively chats! Join me for fun, connect with other gamers, and let’s create unforgettable gaming moments together!</p>
+
+                    <div class="flex flex-col space-y-6">
+                        <h4 class="text-xl font-medium text-gray-300">Twitch</h4>
+                        <!-- Twitch Player Embed -->
+                        <iframe src="https://player.twitch.tv/?channel=lethalxjoker&parent=lethalxwolf.live" class="rounded-lg shadow-xl" height="250" allowfullscreen></iframe>
+                        <!-- Twitch Chat Embed -->
+                        <iframe src="https://www.twitch.tv/embed/lethalxjoker/chat?parent=lethalxwolf.live&darkpopout" class="chat-iframe rounded-lg shadow-xl" height="375"></iframe>
+                        
+                        <h4 class="text-xl font-medium text-gray-300">Kick</h4>
+                        <!-- Kick Player Embed -->
+                        <iframe src="https://player.kick.com/lethalxjoker" class="rounded-lg shadow-xl" height="300" allowfullscreen></iframe>
+                    </div>
+                </article>
+
+            </div>
+        </section>
+
+        <!-- COMMUNITY SECTION (Combined content from community.html and home.html clips) -->
+        <section id="community" class="community-section">
+            <h2 class="text-4xl font-bold mb-8 text-primary-color border-b-2 border-primary-color pb-2">Community & Social Platforms</h2>
+            <p class="text-lg mb-8 text-gray-300">Here you can find our Discord and other official platforms where we post content! Don't miss the highlights!</p>
+
+            <!-- Featured Clips (from home.html) -->
+            <div class="featured-clips mb-12 p-6 bg-gray-900 rounded-xl shadow-2xl">
+                <h3 class="text-3xl font-bold mb-6 text-accent-color">Recent Twitch Highlights</h3>
+                <div class="clips-container">
+                    <!-- Placeholder Clip 1 (Replace with actual clips) -->
+                    <iframe
+                      src="https://clips.twitch.tv/embed?clip=ThirstySecretiveNuggetsNerfRedBlaster-WW7mH5ybLjpD-PvM&parent=lethalxwolf.live"
+                      frameborder="0"
+                      allowfullscreen
+                      class="rounded-lg shadow-xl">
+                    </iframe>
+                    
+                    <!-- Placeholder Clip 2 (Replace with actual clips) -->
+                    <iframe
+                      src="https://clips.twitch.tv/embed?clip=NurturingOpenPandaJKanStyle-1Z5uDJkgremMjZ5O&parent=lethalxwolf.live"
+                      frameborder="0"
+                      allowfullscreen
+                      class="rounded-lg shadow-xl">
+                    </iframe>
+                </div>
+            </div>
+
+            <!-- Social Media Listings (from community.html) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                <!-- Wolf Poe Socials -->
+                <article class="social-link-card p-6 rounded-xl shadow-lg">
+                    <h3 class="text-2xl font-semibold mb-4 text-accent-color">Wolf_Poe</h3>
+                    <div class="space-y-4">
+                        <a href="https://www.tiktok.com/@wolfpoeofficial" target="_blank" class="flex items-center space-x-3 text-lg hover:text-primary-color transition duration-200">
+                            <!-- Placeholder for TikTok Panel -->
+                            <img src="https://placehold.co/150x50/1a1a1a/ffffff?text=TikTok" alt="Wolf Poe TikTok" class="w-24 h-auto rounded-md border border-gray-600">
+                            <span class="font-medium">@wolfpoeofficial</span>
+                        </a>
+                        <a href="https://www.youtube.com/@wolfpoeofficial" target="_blank" class="flex items-center space-x-3 text-lg hover:text-primary-color transition duration-200">
+                            <!-- Placeholder for YouTube Panel -->
+                            <img src="https://placehold.co/150x50/1a1a1a/ffffff?text=YouTube" alt="Wolf Poe YouTube" class="w-24 h-auto rounded-md border border-gray-600">
+                            <span class="font-medium">@wolfpoeofficial</span>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- LethalXJoker Socials -->
+                <article class="social-link-card p-6 rounded-xl shadow-lg">
+                    <h3 class="text-2xl font-semibold mb-4 text-accent-color">LethalXJoker</h3>
+                    <div class="space-y-4">
+                        <a href="https://www.tiktok.com/@lethaljoker" target="_blank" class="flex items-center space-x-3 text-lg hover:text-primary-color transition duration-200">
+                            <!-- Placeholder for TikTok Panel -->
+                            <img src="https://placehold.co/150x50/1a1a1a/ffffff?text=TikTok" alt="LethalXJoker TikTok" class="w-24 h-auto rounded-md border border-gray-600">
+                            <span class="font-medium">@lethaljoker</span>
+                        </a>
+                        <a href="https://www.youtube.com/@itslethaljokergaming" target="_blank" class="flex items-center space-x-3 text-lg hover:text-primary-color transition duration-200">
+                            <!-- Placeholder for YouTube Panel -->
+                            <img src="https://placehold.co/150x50/1a1a1a/ffffff?text=YouTube" alt="LethalXJoker YouTube" class="w-24 h-auto rounded-md border border-gray-600">
+                            <span class="font-medium">@itslethaljokergaming</span>
+                        </a>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER & COPYRIGHT SECTION -->
+    <footer class="bg-gray-900 border-t border-primary-color/50 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 text-center">
+            <p class="text-sm text-gray-500">&copy; 2025 LethalXWolf. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Menu Toggle, Schedule, and Live Status (Requires Firebase to work fully) -->
+    <script type="module">
+        // Firebase Imports (required for full functionality of live status/auth as per the original file context)
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, getDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global Variables
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        let db, auth, userId;
+        let isAuthReady = false;
+
+        // --- Menu Functions ---
+        const menuOverlay = document.getElementById('menu-overlay');
+        const menuButton = document.getElementById('floating-menu-button');
+        const menuIconOpen = document.getElementById('menu-icon-open');
+        const menuIconClose = document.getElementById('menu-icon-close');
+        
+        function toggleMenu() {
+            const isOpen = menuOverlay.classList.toggle('open');
+            if (isOpen) {
+                menuIconOpen.classList.add('hidden');
+                menuIconClose.classList.remove('hidden');
+                document.body.style.overflow = 'hidden'; // Prevent scrolling on main content
+            } else {
+                menuIconOpen.classList.remove('hidden');
+                menuIconClose.classList.add('hidden');
+                document.body.style.overflow = ''; // Restore scrolling
+            }
+        }
+        
+        function closeMenu() {
+            if (menuOverlay.classList.contains('open')) {
+                toggleMenu();
+            }
+        }
+
+        // --- Schedule Utility Functions ---
+
+        // Schedule Data (from schedule.html)
+        const schedule = {
+            "Monday": {"Wolf Poe": null, "Lethal x Joker": null},
+            "Tuesday": {"Wolf Poe": ["20:15", "23:30"], "Lethal x Joker": ["20:15", "23:59"]},
+            "Wednesday": {"Wolf Poe": ["20:15", "23:30"], "Lethal x Joker": ["20:15", "23:59"]},
+            "Thursday": {"Wolf Poe": ["20:15", "23:59"], "Lethal x Joker": ["20:15", "23:59"]},
+            "Friday": {"Wolf Poe": "Maybe", "Lethal x Joker": "Maybe"},
+            "Saturday": {"Wolf Poe": null, "Lethal x Joker": null},
+            "Sunday": {"Wolf Poe": null, "Lethal x Joker": null},
+        };
+
+        function localizeTime(utcHourMin) {
+            const [hour, min] = utcHourMin.split(':');
+            const utcDate = new Date();
+            utcDate.setUTCFullYear(utcDate.getFullYear(), utcDate.getMonth(), utcDate.getDate());
+            utcDate.setUTCHours(parseInt(hour, 10), parseInt(min, 10), 0, 0);
+
+            return utcDate.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+        }
+
+        function populateSchedule() {
+            const tbody = document.getElementById('schedule-body');
+            tbody.innerHTML = "";
+
+            for (const [day, streams] of Object.entries(schedule)) {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-700 transition duration-150';
+                row.innerHTML = `<td class="font-medium text-primary-color">${day}</td>`;
+                
+                for (const streamer of ["Wolf Poe", "Lethal x Joker"]) {
+                    let content = "Off";
+                    if (streams[streamer]) {
+                        if (streams[streamer] === "Maybe") {
+                            content = "Maybe (Join Discord)";
+                        } else {
+                            const start = localizeTime(streams[streamer][0]);
+                            const end = streams[streamer][1] === "23:59" ? "Late" : localizeTime(streams[streamer][1]); 
+                            content = `${start} - ${end}`;
+                        }
+                    }
+                    row.innerHTML += `<td class="text-gray-200">${content}</td>`;
+                }
+                tbody.appendChild(row);
+            }
+
+            document.getElementById('timezone-note').innerText = 
+                `All times displayed are in your local timezone: ${Intl.DateTimeFormat().resolvedOptions().timeZone}`;
+        }
+        
+        // --- Live Status and Countdown (Placeholder) ---
+
+        function startCountdown() {
+            const countdownEl = document.getElementById('countdown-timer');
+            const today = new Date();
+            const tomorrow = new Date(today);
+            tomorrow.setDate(today.getDate() + 1);
+            tomorrow.setHours(20, 15, 0, 0); // Mock time: 8:15 PM
+
+            function updateCountdown() {
+                const now = new Date().getTime();
+                let distance = tomorrow.getTime() - now;
+
+                if (distance < 0) {
+                    distance += 7 * 24 * 60 * 60 * 1000; // Add 7 days to keep countdown running
+                }
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                countdownEl.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+            }
+
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+        }
+
+        // --- Initialization ---
+
+        window.onload = function() {
+            // 1. Initialize Firebase and Auth
+            if (Object.keys(firebaseConfig).length > 0) {
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+                
+                onAuthStateChanged(auth, async (user) => {
+                    if (user) {
+                        userId = user.uid;
+                    } else if (initialAuthToken) {
+                        try {
+                            await signInWithCustomToken(auth, initialAuthToken);
+                            userId = auth.currentUser.uid;
+                        } catch (error) {
+                            console.error("Custom token sign-in failed:", error);
+                            await signInAnonymously(auth);
+                            userId = auth.currentUser.uid;
+                        }
+                    } else {
+                        await signInAnonymously(auth);
+                        userId = auth.currentUser.uid;
+                    }
+                    isAuthReady = true;
+                    console.log("Firebase Auth Ready. User ID:", userId);
+                    // fetchLiveStatus(); // Uncomment if you implement this function fully
+                });
+            } else {
+                 console.warn("Firebase config not available. Live status will not function.");
+                 isAuthReady = true;
+            }
+            
+            // 2. Populate Static Content
+            populateSchedule();
+            startCountdown();
+            
+            // 3. Attach Menu Listeners
+            menuButton.addEventListener('click', toggleMenu);
+            
+            // 4. Anchor Scroll Logic (Updated to close the menu)
+            document.querySelectorAll('a[href^="#"], .menu-link').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    
+                    // Only perform smooth scroll if the target is an internal anchor
+                    if (targetId.startsWith('#')) {
+                        document.querySelector(targetId).scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                        // Close the menu after clicking a link
+                        closeMenu(); 
+                    }
+                });
+            });
+        };
+    </script>
+</body>
+</html>
