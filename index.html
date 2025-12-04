@@ -36,6 +36,15 @@
             filter: brightness(0.7);
         }
 
+        /* ************************************** */
+        /* ** NEW: Custom Logo Size ** */
+        /* Set width to 197px to match the reference site on desktop */
+        .logo-img {
+            width: 197px; 
+            height: auto;
+        }
+        /* ************************************** */
+
         /* Custom Streamer Section (from original files) */
         .streamer {
             display: flex;
@@ -222,7 +231,7 @@
                         <!-- LOGO SIZE CORRECTED: Reduced size using Tailwind class w-28 -->
                         <img src="images/logo.png" 
                              alt="Lethal x Wolf Logo" 
-                             class="w-28 h-auto rounded-lg shadow-2xl"> 
+                             class="logo-img rounded-lg shadow-2xl"> 
                     </a>
                 </div>
             </header>
@@ -638,6 +647,7 @@
     </script>
 </body>
 </html>
+
 
 
 
