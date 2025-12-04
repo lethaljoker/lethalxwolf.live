@@ -35,7 +35,7 @@
             z-index: -1;
             filter: brightness(0.7);
         }
-
+        
         /* ************************************** */
         /* ** NEW: Custom Logo Size ** */
         /* Set width to 197px to match the reference site on desktop */
@@ -44,6 +44,7 @@
             height: auto;
         }
         /* ************************************** */
+
 
         /* Custom Streamer Section (from original files) */
         .streamer {
@@ -228,7 +229,7 @@
                 <div class="logo">
                     <!-- The anchor link now points to #home instead of index.html -->
                     <a href="#home">
-                        <!-- LOGO SIZE CORRECTED: Reduced size using Tailwind class w-28 -->
+                        <!-- LOGO SIZE CORRECTED: Using the custom logo-img class for 197px width -->
                         <img src="images/logo.png" 
                              alt="Lethal x Wolf Logo" 
                              class="logo-img rounded-lg shadow-2xl"> 
@@ -237,7 +238,7 @@
             </header>
 
             <!-- Streamers Status -->
-            <!-- Adjusted vertical spacing (mt-16) to account for the logo now being positioned absolutely at the top -->
+            <!-- Adjusted vertical spacing (mt-20) to ensure content sits below the logo area -->
             <div class="streamers flex space-x-8 mb-10 mt-20 md:mt-16"> 
                 <div class="streamer">
                     <div class="avatar-container">
@@ -462,7 +463,7 @@
     <!-- FOOTER & COPYRIGHT SECTION -->
     <footer class="bg-gray-900 border-t border-primary-color/50 mt-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 text-center">
-            <p class="text-sm text-gray-500">&copy; 2025 LethalXWolf. All rights reserved.</p>
+            <p class="text-sm text-gray-500">&copy; 2025 LethalXWolf LLC. All rights reserved. Also Chaos.</p>
         </div>
     </footer>
 
@@ -508,12 +509,15 @@
 
         // --- Schedule Utility Functions ---
 
-        // Schedule Data (from schedule.html)
+        // Schedule Data: UPDATED for 8:30 PM EST (01:30 UTC next day)
         const schedule = {
             "Monday": {"Wolf Poe": null, "Lethal x Joker": null},
-            "Tuesday": {"Wolf Poe": ["20:15", "23:30"], "Lethal x Joker": ["20:15", "23:59"]},
-            "Wednesday": {"Wolf Poe": ["20:15", "23:30"], "Lethal x Joker": ["20:15", "23:59"]},
-            "Thursday": {"Wolf Poe": ["20:15", "23:59"], "Lethal x Joker": ["20:15", "23:59"]},
+            // 8:30 PM EST is 01:30 UTC (next day)
+            // 11:59 PM EST is 04:59 UTC (next day)
+            "Tuesday": {"Wolf Poe": ["01:30", "04:30"], "Lethal x Joker": ["01:30", "04:59"]}, // Wolf Poe ends at 11:30 PM EST
+            "Wednesday": {"Wolf Poe": ["01:30", "04:30"], "Lethal x Joker": ["01:30", "04:59"]},
+            // Lethal x Joker ends late, using 04:59 UTC (11:59 PM EST)
+            "Thursday": {"Wolf Poe": ["01:30", "04:59"], "Lethal x Joker": ["01:30", "04:59"]}, 
             "Friday": {"Wolf Poe": "Maybe", "Lethal x Joker": "Maybe"},
             "Saturday": {"Wolf Poe": null, "Lethal x Joker": null},
             "Sunday": {"Wolf Poe": null, "Lethal x Joker": null},
@@ -544,7 +548,7 @@
                             content = "Maybe (Join Discord)";
                         } else {
                             const start = localizeTime(streams[streamer][0]);
-                            const end = streams[streamer][1] === "23:59" ? "Late" : localizeTime(streams[streamer][1]); 
+                            const end = streams[streamer][1] === "04:59" ? "Late" : localizeTime(streams[streamer][1]); // Check for new late marker
                             content = `${start} - ${end}`;
                         }
                     }
@@ -561,17 +565,60 @@
 
         function startCountdown() {
             const countdownEl = document.getElementById('countdown-timer');
-            const today = new Date();
-            const tomorrow = new Date(today);
-            tomorrow.setDate(today.getDate() + 1);
-            tomorrow.setHours(20, 15, 0, 0); // Mock time: 8:15 PM
+            
+            // Function to find the next stream date based on the new 8:30 PM EST schedule
+            function getNextStreamDate() {
+                const now = new Date();
+                let nextStream = new Date(now);
+
+                // Find the next stream day (Tuesday, Wednesday, Thursday)
+                let dayOfWeek = now.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
+                let streamDays = [2, 3, 4]; // Tue, Wed, Thu
+
+                // If today is a stream day, check if stream has passed
+                if (streamDays.includes(dayOfWeek)) {
+                    // Set stream time to 01:30 UTC for the *next* day
+                    nextStream.setUTCHours(1, 30, 0, 0); 
+                    
+                    // If current UTC time is already past 01:30 UTC (i.e., stream started/passed)
+                    if (now.getUTCHours() > 1 || (now.getUTCHours() === 1 && now.getUTCMinutes() >= 30)) {
+                        // Move to the next stream day
+                        do {
+                            nextStream.setDate(nextStream.getDate() + 1);
+                            dayOfWeek = nextStream.getDay();
+                        } while (!streamDays.includes(dayOfWeek));
+                    }
+                } else {
+                    // Find the next stream day (Tuesday, Wednesday, or Thursday)
+                    do {
+                        nextStream.setDate(nextStream.getDate() + 1);
+                        dayOfWeek = nextStream.getDay();
+                    } while (!streamDays.includes(dayOfWeek));
+                    
+                    // Set the time on that new day to 01:30 UTC
+                    nextStream.setUTCHours(1, 30, 0, 0); 
+                }
+
+                // If the stream start time falls on Monday (UTC time, which is 8:30 PM EST Sunday),
+                // we should always aim for the Tuesday stream. This prevents jumping far forward.
+
+                // Final adjustment: Ensure the time is set to 01:30 UTC on the designated stream day's UTC date.
+                // Note: The logic above handles the date progression based on local time passing 8:30 PM EST,
+                // setting the UTC date correctly.
+                return nextStream;
+            }
 
             function updateCountdown() {
+                const nextStreamDate = getNextStreamDate();
                 const now = new Date().getTime();
-                let distance = tomorrow.getTime() - now;
+                let distance = nextStreamDate.getTime() - now;
 
-                if (distance < 0) {
-                    distance += 7 * 24 * 60 * 60 * 1000; // Add 7 days to keep countdown running
+                // Simple placeholder check for "Live Now!" based on time slot
+                // NOTE: A real status check would require your Twitch API logic (removed for simplicity)
+                // We'll skip the "Live Now" check as the API logic is not fully present.
+                if (distance <= 0) {
+                     // If the time passed, schedule next check for a future stream time.
+                     distance += 7 * 24 * 60 * 60 * 1000;
                 }
 
                 const days = Math.floor(distance / (1000 * 60 * 60 * 24));
@@ -647,7 +694,3 @@
     </script>
 </body>
 </html>
-
-
-
-
