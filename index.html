@@ -24,7 +24,7 @@
             scroll-behavior: smooth;
         }
 
-        /* Hero Background Mimicry */
+        /* Hero Background Mimicry - Using WebBackground.png path */
         .hero-background {
             position: absolute;
             top: 0;
@@ -78,10 +78,6 @@
             background-color: #e82c5e; /* Twitch Red */
             box-shadow: 0 0 10px var(--accent-color);
         }
-
-        /* Navigation custom style for active/hover states */
-        /* REMOVED: .main-nav a.active */
-        /* REMOVED: .main-nav a:hover */
 
         /* Floating Menu Button Styles */
         #floating-menu-button {
@@ -156,6 +152,22 @@
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(156, 0, 176, 0.5);
         }
+        
+        /* Custom Positioning for Header/Logo to mimic the original site layout */
+        .top-header {
+            /* Positioned absolutely within the hero section */
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding: 1.5rem; 
+            z-index: 10;
+        }
+
+        /* Ensures the hero content takes up the full width */
+        .hero-content {
+            width: 100%; 
+        }
+
     </style>
 </head>
 <body class="min-h-screen">
@@ -188,17 +200,22 @@
         <div class="hero-background absolute inset-0 z-0"></div>
         <div class="hero-content relative z-10 flex flex-col items-center text-center">
 
-      <!-- Header with logo inside the hero -->
-      <header class="top-header">
-        <div class="logo">
-          <a href="index.html">
-            <img src="images/logo.png" alt="Lethal x Wolf Logo" />
-          </a>
-        </div>
-      </header>
+            <!-- Header with logo inside the hero -->
+            <header class="top-header">
+                <div class="logo">
+                    <!-- The anchor link now points to #home instead of index.html -->
+                    <a href="#home">
+                        <!-- LOGO SIZE CORRECTED: Reduced size using Tailwind class w-28 -->
+                        <img src="images/logo.png" 
+                             alt="Lethal x Wolf Logo" 
+                             class="w-28 h-auto rounded-lg shadow-2xl"> 
+                    </a>
+                </div>
+            </header>
 
             <!-- Streamers Status -->
-            <div class="streamers flex space-x-8 mb-10">
+            <!-- Adjusted vertical spacing (mt-16) to account for the logo now being positioned absolutely at the top -->
+            <div class="streamers flex space-x-8 mb-10 mt-20 md:mt-16"> 
                 <div class="streamer">
                     <div class="avatar-container">
                         <img src="images/WebPicWolf.png" alt="Wolf Poe" class="avatar">
@@ -356,13 +373,13 @@
                     <h3 class="text-2xl font-semibold mb-4 text-accent-color">Wolf_Poe</h3>
                     <div class="space-y-4">
                         <a href="https://www.tiktok.com/@wolfpoeofficial" target="_blank" class="flex items-center space-x-3 text-lg hover:text-primary-color transition duration-200">
-                            <!-- Placeholder for TikTok Panel -->
-                            <img src="https://placehold.co/150x50/1a1a1a/ffffff?text=TikTok" alt="Wolf Poe TikTok" class="w-24 h-auto rounded-md border border-gray-600">
+                            <!-- Image Path Confirmed: images/tiktokpannelwolf.png -->
+                            <img src="images/tiktokpannelwolf.png" alt="Wolf Poe TikTok" class="w-24 h-auto rounded-md border border-gray-600">
                             <span class="font-medium">@wolfpoeofficial</span>
                         </a>
                         <a href="https://www.youtube.com/@wolfpoeofficial" target="_blank" class="flex items-center space-x-3 text-lg hover:text-primary-color transition duration-200">
-                            <!-- Placeholder for YouTube Panel -->
-                            <img src="https://placehold.co/150x50/1a1a1a/ffffff?text=YouTube" alt="Wolf Poe YouTube" class="w-24 h-auto rounded-md border border-gray-600">
+                            <!-- Image Path Confirmed: images/youtubepanelwolf.png -->
+                            <img src="images/youtubepanelwolf.png" alt="Wolf Poe YouTube" class="w-24 h-auto rounded-md border border-gray-600">
                             <span class="font-medium">@wolfpoeofficial</span>
                         </a>
                     </div>
@@ -373,13 +390,13 @@
                     <h3 class="text-2xl font-semibold mb-4 text-accent-color">LethalXJoker</h3>
                     <div class="space-y-4">
                         <a href="https://www.tiktok.com/@lethaljoker" target="_blank" class="flex items-center space-x-3 text-lg hover:text-primary-color transition duration-200">
-                            <!-- Placeholder for TikTok Panel -->
-                            <img src="https://placehold.co/150x50/1a1a1a/ffffff?text=TikTok" alt="LethalXJoker TikTok" class="w-24 h-auto rounded-md border border-gray-600">
+                            <!-- Image Path Confirmed: images/tiktokpanneljoker.png -->
+                            <img src="images/tiktokpanneljoker.png" alt="LethalXJoker TikTok" class="w-24 h-auto rounded-md border border-gray-600">
                             <span class="font-medium">@lethaljoker</span>
                         </a>
                         <a href="https://www.youtube.com/@itslethaljokergaming" target="_blank" class="flex items-center space-x-3 text-lg hover:text-primary-color transition duration-200">
-                            <!-- Placeholder for YouTube Panel -->
-                            <img src="https://placehold.co/150x50/1a1a1a/ffffff?text=YouTube" alt="LethalXJoker YouTube" class="w-24 h-auto rounded-md border border-gray-600">
+                            <!-- Image Path Confirmed: images/youtubepaneljoker.png -->
+                            <img src="images/youtubepaneljoker.png" alt="LethalXJoker YouTube" class="w-24 h-auto rounded-md border border-gray-600">
                             <span class="font-medium">@itslethaljokergaming</span>
                         </a>
                     </div>
@@ -577,5 +594,3 @@
     </script>
 </body>
 </html>
-
-
