@@ -186,16 +186,20 @@
             background-color: var(--kick-color); /* Kick green */
             color: #000; /* Black text for visibility on green */
         }
+        /* Default size for all stream link icons (used by Twitch) */
         .stream-link-icon {
-            height: 1.25rem; /* Equivalent to w-5 h-5 */
+            height: 1.25rem; /* 20px */
             width: 1.25rem;
             margin-right: 0.5rem; /* Equivalent to space-x-2 */
         }
 
         /* ************************************** */
-        /* ** NEW: KICK LOGO CONTRAST FIX ** */
-        /* Target the Kick logo specifically within its link */
+        /* ** KICK LOGO CONTRAST FIX & SIZE INCREASE ** */
         .kick-button .stream-link-icon {
+            /* INCREASE SIZE: 1.75rem is 28px (Tailwind w-7/h-7) */
+            height: 1.75rem;
+            width: 1.75rem;
+
             /* Add a small white border to provide separation from the bright green button background */
             border: 2px solid white; 
             border-radius: 4px; /* Slightly round the corners of the border */
