@@ -87,7 +87,8 @@
         }
 
         .status-indicator.live {
-            background-color: var(--kick-color); /* Green for live across all platforms */
+            /* Using Kick green for consistency with the button color */
+            background-color: var(--kick-color); 
             box-shadow: 0 0 8px var(--kick-color);
         }
         
@@ -527,10 +528,10 @@
         
         // --- Stream Status Logic (Reintegrated from old script.js and expanded) ---
         
-        // NOTE: THESE SECRETS MUST BE KEPT SECURE AND ARE ONLY INCLUDED HERE FOR THE CLIENT-SIDE POC.
-        // FOR PRODUCTION, USE A SECURE BACKEND.
-        const TWITCH_CLIENT_ID = 'YOUR_TWITCH_CLIENT_ID'; // Replace with actual Client ID
-        const TWITCH_ACCESS_TOKEN = 'YOUR_TWITCH_ACCESS_TOKEN'; // Replace with actual Access Token
+        // NOTE: These are the credentials provided in the user's previous file for Twitch API access.
+        // These MUST be kept secure on a live site, ideally managed by a backend service.
+        const TWITCH_CLIENT_ID = 'gp762nuuoqcoxypju8c569th9wz7q5'; 
+        const TWITCH_ACCESS_TOKEN = 'r804gii0lw7dekrv7zotgi5ye1obq9'; 
         
         const channels = [
             { name: 'wolf_poe', statusEl: document.getElementById('wolf-status'), platform: 'twitch' },
@@ -561,9 +562,10 @@
         }
         
         async function checkTwitchStatus(channelName) {
-            if (TWITCH_CLIENT_ID === 'YOUR_TWITCH_CLIENT_ID' || TWITCH_ACCESS_TOKEN === 'YOUR_TWITCH_ACCESS_TOKEN') {
-                console.warn(`Twitch API check skipped for ${channelName}: Client ID or Access Token is missing/placeholder.`);
-                return false; // Assume offline if credentials are missing
+            // Check if credentials are present (they are now, based on user's request)
+            if (!TWITCH_CLIENT_ID || !TWITCH_ACCESS_TOKEN) {
+                console.warn(`Twitch API check skipped for ${channelName}: Client ID or Access Token is missing.`);
+                return false; 
             }
 
             try {
@@ -585,20 +587,21 @@
         async function updateAllStatuses() {
             let isAnyLive = false;
             
+            // NOTE: The logic for Kick, YouTube, and TikTok remains mocked, as their APIs 
+            // are too complex or require a dedicated server (backend) to implement securely.
             for (const channel of channels) {
                 let isLive = false;
                 
                 if (channel.platform === 'twitch') {
                     isLive = await checkTwitchStatus(channel.name);
                 } 
-                // KICK, YOUTUBE, TIKTOK Statuses are MOCKED as their APIs are complex/require secure backend.
+                // KICK, YOUTUBE, TIKTOK Statuses are MOCKED
                 else if (channel.platform === 'kick') {
-                    // Kick stream embeds are automatically checking for status, but no simple API call is available here.
-                    isLive = false; // Mocked as offline
+                    isLive = false; 
                 } else if (channel.platform === 'youtube') {
-                    isLive = false; // Mocked as offline
+                    isLive = false; 
                 } else if (channel.platform === 'tiktok') {
-                    isLive = false; // Mocked as offline
+                    isLive = false; 
                 }
 
                 // Apply status to avatar indicators (Hero section)
@@ -613,8 +616,6 @@
                 
                 if (isLive) isAnyLive = true;
             }
-            
-            // Optional: Update global "Live Now" banner based on Twitch/Kick status if desired.
         }
 
         // --- Menu Functions ---
@@ -644,10 +645,9 @@
 
         // --- Schedule Utility Functions ---
 
-        // Schedule Data: UPDATED for 8:30 PM EST (01:30 UTC next day)
+        // Schedule Data: 8:30 PM EST (01:30 UTC next day)
         const schedule = {
             "Monday": {"Wolf Poe": null, "Lethal x Joker": null},
-            // 8:30 PM EST is 01:30 UTC (next day)
             "Tuesday": {"Wolf Poe": ["01:30", "04:30"], "Lethal x Joker": ["01:30", "04:59"]}, 
             "Wednesday": {"Wolf Poe": ["01:30", "04:30"], "Lethal x Joker": ["01:30", "04:59"]},
             "Thursday": {"Wolf Poe": ["01:30", "04:59"], "Lethal x Joker": ["01:30", "04:59"]}, 
@@ -699,36 +699,28 @@
         function startCountdown() {
             const countdownEl = document.getElementById('countdown-timer');
             
-            // Function to find the next stream date based on the new 8:30 PM EST schedule
             function getNextStreamDate() {
                 const now = new Date();
                 let nextStream = new Date(now);
 
-                // Find the next stream day (Tuesday, Wednesday, Thursday)
-                let dayOfWeek = now.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
+                let dayOfWeek = now.getDay(); 
                 let streamDays = [2, 3, 4]; // Tue, Wed, Thu
 
-                // If today is a stream day, check if stream has passed
                 if (streamDays.includes(dayOfWeek)) {
-                    // Set stream time to 01:30 UTC for the *next* day
                     nextStream.setUTCHours(1, 30, 0, 0); 
                     
-                    // If current UTC time is already past 01:30 UTC (i.e., stream started/passed)
                     if (now.getUTCHours() > 1 || (now.getUTCHours() === 1 && now.getUTCMinutes() >= 30)) {
-                        // Move to the next stream day
                         do {
                             nextStream.setDate(nextStream.getDate() + 1);
                             dayOfWeek = nextStream.getDay();
                         } while (!streamDays.includes(dayOfWeek));
                     }
                 } else {
-                    // Find the next stream day (Tuesday, Wednesday, or Thursday)
                     do {
                         nextStream.setDate(nextStream.getDate() + 1);
                         dayOfWeek = nextStream.getDay();
                     } while (!streamDays.includes(dayOfWeek));
                     
-                    // Set the time on that new day to 01:30 UTC
                     nextStream.setUTCHours(1, 30, 0, 0); 
                 }
                 return nextStream;
@@ -740,7 +732,6 @@
                 let distance = nextStreamDate.getTime() - now;
 
                 if (distance <= 0) {
-                     // If the time passed, schedule next check for a future stream time.
                      distance += 7 * 24 * 60 * 60 * 1000;
                 }
 
@@ -783,6 +774,8 @@
                     }
                     isAuthReady = true;
                     console.log("Firebase Auth Ready. User ID:", userId);
+                    
+                    // 2. Start Status Checks after Auth
                     updateAllStatuses();
                     // Start periodic status check every 5 minutes (300000 ms)
                     setInterval(updateAllStatuses, 300000);
@@ -792,14 +785,14 @@
                  isAuthReady = true;
             }
             
-            // 2. Populate Static Content
+            // 3. Populate Static Content and Timer
             populateSchedule();
             startCountdown();
             
-            // 3. Attach Menu Listeners
+            // 4. Attach Menu Listeners
             menuButton.addEventListener('click', toggleMenu);
             
-            // 4. Anchor Scroll Logic (Updated to close the menu)
+            // 5. Anchor Scroll Logic (Updated to close the menu)
             document.querySelectorAll('a[href^="#"], .menu-link').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
                     e.preventDefault();
