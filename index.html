@@ -14,6 +14,7 @@
             --accent-color: #ff00ff; /* Bright magenta for highlights/status */
             --twitch-color: #6441a5;
             --kick-color: #00d65b;
+            --live-color: #e82c5e; /* Twitch Red/Live status */
         }
 
         /* Basic styling for the body and fonts */
@@ -70,6 +71,7 @@
             object-fit: cover;
         }
 
+        /* Status Indicator Styles */
         .status-indicator {
             position: absolute;
             bottom: 0;
@@ -81,12 +83,29 @@
         }
 
         .status-indicator.offline {
-            background-color: #666;
+            background-color: #666; /* Gray/Red for offline */
         }
 
         .status-indicator.live {
-            background-color: #e82c5e; /* Twitch Red */
-            box-shadow: 0 0 10px var(--accent-color);
+            background-color: var(--kick-color); /* Green for live across all platforms */
+            box-shadow: 0 0 8px var(--kick-color);
+        }
+        
+        /* Status indicator for social links */
+        .social-status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-left: 0.5rem;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .social-status-indicator.offline {
+            background-color: #666;
+        }
+        .social-status-indicator.live {
+            background-color: var(--kick-color);
+            box-shadow: 0 0 5px var(--kick-color);
         }
 
         /* Floating Menu Button Styles */
@@ -413,10 +432,6 @@
             <h2 class="text-4xl font-bold mb-8 text-primary-color border-b-2 border-primary-color pb-2">Community & Social Platforms</h2>
             <p class="text-lg mb-8 text-gray-300">Here you can find our Discord and other official platforms where we post content! Don't miss the highlights!</p>
 
-            <div class="mt-8 discord-cta">
-              <a href="https://discord.gg/aHC5Su85Cq" class="discord-button px-6 py-3 bg-indigo-600 rounded-lg text-lg font-bold shadow-xl hover:bg-indigo-700 transition duration-300 transform hover:scale-105">Join Our Discord Community!</a>
-            </div>
-
             <!-- Featured Clips (from home.html) -->
             <div class="featured-clips mb-12 p-6 bg-gray-900 rounded-xl shadow-2xl">
                 <h3 class="text-3xl font-bold mb-6 text-accent-color">Recent Twitch Highlights</h3>
@@ -450,11 +465,15 @@
                             <!-- Image Path Confirmed: images/tiktokpannelwolf.png -->
                             <img src="images/tiktokpannelwolf.png" alt="Wolf Poe TikTok" class="w-24 h-auto rounded-md border border-gray-600">
                             <span class="font-medium">@wolfpoeofficial</span>
+                            <!-- Status Indicator for TikTok -->
+                            <span class="social-status-indicator offline" id="wolf-tiktok-status"></span>
                         </a>
                         <a href="https://www.youtube.com/@wolfpoeofficial" target="_blank" class="flex items-center space-x-3 text-lg hover:text-primary-color transition duration-200">
                             <!-- Image Path Confirmed: images/youtubepanelwolf.png -->
                             <img src="images/youtubepanelwolf.png" alt="Wolf Poe YouTube" class="w-24 h-auto rounded-md border border-gray-600">
                             <span class="font-medium">@wolfpoeofficial</span>
+                            <!-- Status Indicator for YouTube -->
+                            <span class="social-status-indicator offline" id="wolf-youtube-status"></span>
                         </a>
                     </div>
                 </article>
@@ -467,11 +486,15 @@
                             <!-- Image Path Confirmed: images/tiktokpanneljoker.png -->
                             <img src="images/tiktokpanneljoker.png" alt="LethalXJoker TikTok" class="w-24 h-auto rounded-md border border-gray-600">
                             <span class="font-medium">@lethaljoker</span>
+                            <!-- Status Indicator for TikTok -->
+                            <span class="social-status-indicator offline" id="joker-tiktok-status"></span>
                         </a>
                         <a href="https://www.youtube.com/@itslethaljokergaming" target="_blank" class="flex items-center space-x-3 text-lg hover:text-primary-color transition duration-200">
                             <!-- Image Path Confirmed: images/youtubepaneljoker.png -->
                             <img src="images/youtubepaneljoker.png" alt="LethalXJoker YouTube" class="w-24 h-auto rounded-md border border-gray-600">
                             <span class="font-medium">@itslethaljokergaming</span>
+                            <!-- Status Indicator for YouTube -->
+                            <span class="social-status-indicator offline" id="joker-youtube-status"></span>
                         </a>
                     </div>
                 </article>
@@ -489,7 +512,7 @@
 
     <!-- JavaScript for Menu Toggle, Schedule, and Live Status (Requires Firebase to work fully) -->
     <script type="module">
-        // Firebase Imports (required for full functionality of live status/auth as per the original file context)
+        // --- Firebase Setup (Standard initialization) ---
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, getDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
@@ -501,6 +524,98 @@
 
         let db, auth, userId;
         let isAuthReady = false;
+        
+        // --- Stream Status Logic (Reintegrated from old script.js and expanded) ---
+        
+        // NOTE: THESE SECRETS MUST BE KEPT SECURE AND ARE ONLY INCLUDED HERE FOR THE CLIENT-SIDE POC.
+        // FOR PRODUCTION, USE A SECURE BACKEND.
+        const TWITCH_CLIENT_ID = 'YOUR_TWITCH_CLIENT_ID'; // Replace with actual Client ID
+        const TWITCH_ACCESS_TOKEN = 'YOUR_TWITCH_ACCESS_TOKEN'; // Replace with actual Access Token
+        
+        const channels = [
+            { name: 'wolf_poe', statusEl: document.getElementById('wolf-status'), platform: 'twitch' },
+            { name: 'lethalxjoker', statusEl: document.getElementById('joker-status'), platform: 'twitch' },
+            
+            // Kick Status is Mocked/Manual Check (no simple public API key access)
+            { name: 'wolf-poe', statusEl: null, platform: 'kick', manualCheck: true },
+            { name: 'lethalxjoker', statusEl: null, platform: 'kick', manualCheck: true },
+
+            // Social Statuses (Mocked - APIs are complex and require backend/dedicated service)
+            { name: 'wolfpoeofficial', statusEl: document.getElementById('wolf-tiktok-status'), platform: 'tiktok' },
+            { name: 'wolfpoeofficial', statusEl: document.getElementById('wolf-youtube-status'), platform: 'youtube' },
+            { name: 'lethaljoker', statusEl: document.getElementById('joker-tiktok-status'), platform: 'tiktok' },
+            { name: 'itslethaljokergaming', statusEl: document.getElementById('joker-youtube-status'), platform: 'youtube' },
+        ];
+
+        function setStatus(elementId, isLive) {
+            const el = document.getElementById(elementId);
+            if (el) {
+                if (isLive) {
+                    el.classList.remove('offline');
+                    el.classList.add('live');
+                } else {
+                    el.classList.remove('live');
+                    el.classList.add('offline');
+                }
+            }
+        }
+        
+        async function checkTwitchStatus(channelName) {
+            if (TWITCH_CLIENT_ID === 'YOUR_TWITCH_CLIENT_ID' || TWITCH_ACCESS_TOKEN === 'YOUR_TWITCH_ACCESS_TOKEN') {
+                console.warn(`Twitch API check skipped for ${channelName}: Client ID or Access Token is missing/placeholder.`);
+                return false; // Assume offline if credentials are missing
+            }
+
+            try {
+                // NOTE: This endpoint checks for active streams.
+                const response = await fetch(`https://api.twitch.tv/helix/streams?user_login=${channelName}`, {
+                    headers: {
+                        'Client-ID': TWITCH_CLIENT_ID,
+                        'Authorization': `Bearer ${TWITCH_ACCESS_TOKEN}`
+                    }
+                });
+                const data = await response.json();
+                return data.data && data.data.length > 0;
+            } catch (error) {
+                console.error(`Error checking Twitch status for ${channelName}:`, error);
+                return false;
+            }
+        }
+        
+        async function updateAllStatuses() {
+            let isAnyLive = false;
+            
+            for (const channel of channels) {
+                let isLive = false;
+                
+                if (channel.platform === 'twitch') {
+                    isLive = await checkTwitchStatus(channel.name);
+                } 
+                // KICK, YOUTUBE, TIKTOK Statuses are MOCKED as their APIs are complex/require secure backend.
+                else if (channel.platform === 'kick') {
+                    // Kick stream embeds are automatically checking for status, but no simple API call is available here.
+                    isLive = false; // Mocked as offline
+                } else if (channel.platform === 'youtube') {
+                    isLive = false; // Mocked as offline
+                } else if (channel.platform === 'tiktok') {
+                    isLive = false; // Mocked as offline
+                }
+
+                // Apply status to avatar indicators (Hero section)
+                if (channel.platform === 'twitch' && channel.statusEl) {
+                    setStatus(channel.statusEl.id, isLive);
+                }
+
+                // Apply status to social links (Community section)
+                if (channel.platform !== 'twitch' && channel.statusEl) {
+                    setStatus(channel.statusEl.id, isLive);
+                }
+                
+                if (isLive) isAnyLive = true;
+            }
+            
+            // Optional: Update global "Live Now" banner based on Twitch/Kick status if desired.
+        }
 
         // --- Menu Functions ---
         const menuOverlay = document.getElementById('menu-overlay');
@@ -533,10 +648,8 @@
         const schedule = {
             "Monday": {"Wolf Poe": null, "Lethal x Joker": null},
             // 8:30 PM EST is 01:30 UTC (next day)
-            // 11:59 PM EST is 04:59 UTC (next day)
-            "Tuesday": {"Wolf Poe": ["01:30", "04:30"], "Lethal x Joker": ["01:30", "04:59"]}, // Wolf Poe ends at 11:30 PM EST
+            "Tuesday": {"Wolf Poe": ["01:30", "04:30"], "Lethal x Joker": ["01:30", "04:59"]}, 
             "Wednesday": {"Wolf Poe": ["01:30", "04:30"], "Lethal x Joker": ["01:30", "04:59"]},
-            // Lethal x Joker ends late, using 04:59 UTC (11:59 PM EST)
             "Thursday": {"Wolf Poe": ["01:30", "04:59"], "Lethal x Joker": ["01:30", "04:59"]}, 
             "Friday": {"Wolf Poe": "Maybe", "Lethal x Joker": "Maybe"},
             "Saturday": {"Wolf Poe": null, "Lethal x Joker": null},
@@ -568,7 +681,7 @@
                             content = "Maybe (Join Discord)";
                         } else {
                             const start = localizeTime(streams[streamer][0]);
-                            const end = streams[streamer][1] === "04:59" ? "Late" : localizeTime(streams[streamer][1]); // Check for new late marker
+                            const end = streams[streamer][1] === "04:59" ? "Late" : localizeTime(streams[streamer][1]); 
                             content = `${start} - ${end}`;
                         }
                     }
@@ -618,13 +731,6 @@
                     // Set the time on that new day to 01:30 UTC
                     nextStream.setUTCHours(1, 30, 0, 0); 
                 }
-
-                // If the stream start time falls on Monday (UTC time, which is 8:30 PM EST Sunday),
-                // we should always aim for the Tuesday stream. This prevents jumping far forward.
-
-                // Final adjustment: Ensure the time is set to 01:30 UTC on the designated stream day's UTC date.
-                // Note: The logic above handles the date progression based on local time passing 8:30 PM EST,
-                // setting the UTC date correctly.
                 return nextStream;
             }
 
@@ -633,9 +739,6 @@
                 const now = new Date().getTime();
                 let distance = nextStreamDate.getTime() - now;
 
-                // Simple placeholder check for "Live Now!" based on time slot
-                // NOTE: A real status check would require your Twitch API logic (removed for simplicity)
-                // We'll skip the "Live Now" check as the API logic is not fully present.
                 if (distance <= 0) {
                      // If the time passed, schedule next check for a future stream time.
                      distance += 7 * 24 * 60 * 60 * 1000;
@@ -680,7 +783,9 @@
                     }
                     isAuthReady = true;
                     console.log("Firebase Auth Ready. User ID:", userId);
-                    // fetchLiveStatus(); // Uncomment if you implement this function fully
+                    updateAllStatuses();
+                    // Start periodic status check every 5 minutes (300000 ms)
+                    setInterval(updateAllStatuses, 300000);
                 });
             } else {
                  console.warn("Firebase config not available. Live status will not function.");
@@ -714,4 +819,3 @@
     </script>
 </body>
 </html>
-
