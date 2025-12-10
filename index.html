@@ -73,6 +73,7 @@
         }
 
         /* Status Indicator Styles */
+        /* Hero Avatars Status */
         .status-indicator {
             position: absolute;
             bottom: 0;
@@ -94,7 +95,7 @@
             box-shadow: 0 0 8px var(--live-color);
         }
         
-        /* Status indicator for social links */
+        /* Status indicator for social links AND BUTTONS */
         .social-status-indicator {
             width: 10px;
             height: 10px;
@@ -102,6 +103,7 @@
             margin-left: 0.5rem;
             display: inline-block;
             vertical-align: middle;
+            flex-shrink: 0; /* Prevents button content from squishing it */
         }
         .social-status-indicator.offline {
             /* CHANGED to Bright Red for clear Offline status */
@@ -349,41 +351,73 @@
             <!-- Layout: Flex container to hold two streamer columns (Wolf Poe left, LethalXJoker right) -->
             <div class="flex flex-col md:flex-row justify-center gap-8 mb-12 p-4 bg-gray-900 rounded-xl shadow-inner">
 
-                <!-- 1. WOLF POE BUTTONS (Left Column) -->
+                <!-- 1. WOLF POE BUTTONS AND SOCIALS (Left Column) -->
                 <div class="flex flex-col items-center w-full md:w-1/2 space-y-4">
-                    <h3 class="text-2xl font-semibold text-accent-color">Wolf_Poe Streams</h3>
+                    <h3 class="text-2xl font-semibold text-accent-color">Wolf_Poe</h3>
                     
-                    <!-- Twitch Button -->
+                    <!-- Twitch Button with Status Indicator -->
                     <a href="https://twitch.tv/wolf_poe" target="_blank" 
                        class="flex items-center justify-center w-60 space-x-2 px-6 py-3 rounded-full font-bold shadow-lg transition duration-300 transform hover:scale-105 twitch-button">
                         <img src="images/twitch-logo.png" alt="Twitch Logo" class="stream-link-icon" />
                         <span>Watch on Twitch</span>
+                        <span class="social-status-indicator offline" id="wolf-twitch-button-status"></span>
                     </a>
                     
-                    <!-- Kick Button -->
+                    <!-- Kick Button with Status Indicator -->
                     <a href="https://kick.com/wolf-poe" target="_blank" 
                        class="flex items-center justify-center w-60 space-x-2 px-6 py-3 rounded-full font-bold shadow-lg transition duration-300 transform hover:scale-105 kick-button">
                         <img src="images/kick-logo.png" alt="Kick Logo" class="stream-link-icon" />
                         <span>Watch on Kick</span>
+                        <span class="social-status-indicator offline" id="wolf-kick-button-status"></span>
+                    </a>
+
+                    <!-- TikTok Link (Moved from Community) -->
+                    <a href="https://www.tiktok.com/@wolfpoeofficial" target="_blank" class="flex items-center space-x-3 text-lg hover:text-primary-color transition duration-200 mt-6 pt-4 border-t border-gray-700 w-60 justify-center">
+                        <img src="images/tiktokpannelwolf.png" alt="Wolf Poe TikTok" class="w-16 h-auto rounded-md border border-gray-600">
+                        <span class="font-medium text-sm">TikTok</span>
+                        <span class="social-status-indicator offline" id="wolf-tiktok-button-status"></span>
+                    </a>
+                    
+                    <!-- YouTube Link (Moved from Community) -->
+                    <a href="https://www.youtube.com/@wolfpoeofficial" target="_blank" class="flex items-center space-x-3 text-lg hover:text-primary-color transition duration-200 w-60 justify-center">
+                        <img src="images/youtubepanelwolf.png" alt="Wolf Poe YouTube" class="w-16 h-auto rounded-md border border-gray-600">
+                        <span class="font-medium text-sm">YouTube</span>
+                        <span class="social-status-indicator offline" id="wolf-youtube-button-status"></span>
                     </a>
                 </div>
 
-                <!-- 2. LETHALXJOKER BUTTONS (Right Column) -->
+                <!-- 2. LETHALXJOKER BUTTONS AND SOCIALS (Right Column) -->
                 <div class="flex flex-col items-center w-full md:w-1/2 space-y-4 pt-8 md:pt-0 border-t md:border-t-0 md:border-l border-primary-color/30">
-                    <h3 class="text-2xl font-semibold text-accent-color">LethalXJoker Streams</h3>
+                    <h3 class="text-2xl font-semibold text-accent-color">LethalXJoker</h3>
 
-                    <!-- Twitch Button -->
+                    <!-- Twitch Button with Status Indicator -->
                     <a href="https://twitch.tv/lethalxjoker" target="_blank" 
                        class="flex items-center justify-center w-60 space-x-2 px-6 py-3 rounded-full font-bold shadow-lg transition duration-300 transform hover:scale-105 twitch-button">
                         <img src="images/twitch-logo.png" alt="Twitch Logo" class="stream-link-icon" />
                         <span>Watch on Twitch</span>
+                        <span class="social-status-indicator offline" id="joker-twitch-button-status"></span>
                     </a>
                     
-                    <!-- Kick Button -->
+                    <!-- Kick Button with Status Indicator -->
                     <a href="https://kick.com/lethalxjoker" target="_blank" 
                        class="flex items-center justify-center w-60 space-x-2 px-6 py-3 rounded-full font-bold shadow-lg transition duration-300 transform hover:scale-105 kick-button">
                         <img src="images/kick-logo.png" alt="Kick Logo" class="stream-link-icon" />
                         <span>Watch on Kick</span>
+                        <span class="social-status-indicator offline" id="joker-kick-button-status"></span>
+                    </a>
+                    
+                    <!-- TikTok Link (Moved from Community) -->
+                    <a href="https://www.tiktok.com/@lethaljoker" target="_blank" class="flex items-center space-x-3 text-lg hover:text-primary-color transition duration-200 mt-6 pt-4 border-t md:border-t-0 border-gray-700 w-60 justify-center">
+                        <img src="images/tiktokpanneljoker.png" alt="LethalXJoker TikTok" class="w-16 h-auto rounded-md border border-gray-600">
+                        <span class="font-medium text-sm">TikTok</span>
+                        <span class="social-status-indicator offline" id="joker-tiktok-button-status"></span>
+                    </a>
+                    
+                    <!-- YouTube Link (Moved from Community) -->
+                    <a href="https://www.youtube.com/@itslethaljokergaming" target="_blank" class="flex items-center space-x-3 text-lg hover:text-primary-color transition duration-200 w-60 justify-center">
+                        <img src="images/youtubepaneljoker.png" alt="LethalXJoker YouTube" class="w-16 h-auto rounded-md border border-gray-600">
+                        <span class="font-medium text-sm">YouTube</span>
+                        <span class="social-status-indicator offline" id="joker-youtube-button-status"></span>
                     </a>
                 </div>
 
@@ -459,49 +493,12 @@
             </div>
 
             <!-- Social Media Listings (from community.html) -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                
-                <!-- Wolf Poe Socials -->
-                <article class="social-link-card p-6 rounded-xl shadow-lg">
-                    <h3 class="text-2xl font-semibold mb-4 text-accent-color">Wolf_Poe</h3>
-                    <div class="space-y-4">
-                        <a href="https://www.tiktok.com/@wolfpoeofficial" target="_blank" class="flex items-center space-x-3 text-lg hover:text-primary-color transition duration-200">
-                            <!-- Image Path Confirmed: images/tiktokpannelwolf.png -->
-                            <img src="images/tiktokpannelwolf.png" alt="Wolf Poe TikTok" class="w-24 h-auto rounded-md border border-gray-600">
-                            <span class="font-medium">@wolfpoeofficial</span>
-                            <!-- Status Indicator for TikTok -->
-                            <span class="social-status-indicator offline" id="wolf-tiktok-status"></span>
-                        </a>
-                        <a href="https://www.youtube.com/@wolfpoeofficial" target="_blank" class="flex items-center space-x-3 text-lg hover:text-primary-color transition duration-200">
-                            <!-- Image Path Confirmed: images/youtubepanelwolf.png -->
-                            <img src="images/youtubepanelwolf.png" alt="Wolf Poe YouTube" class="w-24 h-auto rounded-md border border-gray-600">
-                            <span class="font-medium">@wolfpoeofficial</span>
-                            <!-- Status Indicator for YouTube -->
-                            <span class="social-status-indicator offline" id="wolf-youtube-status"></span>
-                        </a>
-                    </div>
-                </article>
-
-                <!-- LethalXJoker Socials -->
-                <article class="social-link-card p-6 rounded-xl shadow-lg">
-                    <h3 class="text-2xl font-semibold mb-4 text-accent-color">LethalXJoker</h3>
-                    <div class="space-y-4">
-                        <a href="https://www.tiktok.com/@lethaljoker" target="_blank" class="flex items-center space-x-3 text-lg hover:text-primary-color transition duration-200">
-                            <!-- Image Path Confirmed: images/tiktokpanneljoker.png -->
-                            <img src="images/tiktokpanneljoker.png" alt="LethalXJoker TikTok" class="w-24 h-auto rounded-md border border-gray-600">
-                            <span class="font-medium">@lethaljoker</span>
-                            <!-- Status Indicator for TikTok -->
-                            <span class="social-status-indicator offline" id="joker-tiktok-status"></span>
-                        </a>
-                        <a href="https://www.youtube.com/@itslethaljokergaming" target="_blank" class="flex items-center space-x-3 text-lg hover:text-primary-color transition duration-200">
-                            <!-- Image Path Confirmed: images/youtubepaneljoker.png -->
-                            <img src="images/youtubepaneljoker.png" alt="LethalXJoker YouTube" class="w-24 h-auto rounded-md border border-gray-600">
-                            <span class="font-medium">@itslethaljokergaming</span>
-                            <!-- Status Indicator for YouTube -->
-                            <span class="social-status-indicator offline" id="joker-youtube-status"></span>
-                        </a>
-                    </div>
-                </article>
+            <!-- NOTE: TikTok and YouTube links MOVED to Streams section. Keeping Discord CTA and other community info here if expanded later. -->
+            <div class="text-center p-6 bg-gray-900 rounded-xl shadow-2xl">
+                 <p class="text-gray-400">Join our Discord for direct community engagement and announcements!</p>
+                 <div class="mt-4">
+                     <a href="https://discord.gg/aHC5Su85Cq" class="discord-button px-6 py-3 bg-indigo-600 rounded-lg text-lg font-bold shadow-xl hover:bg-indigo-700 transition duration-300 transform hover:scale-105">Discord Link</a>
+                 </div>
             </div>
         </section>
 
@@ -537,18 +534,24 @@
         const TWITCH_ACCESS_TOKEN = 'r804gii0lw7dekrv7zotgi5ye1obq9'; 
         
         const channels = [
+            // AVATAR STATUS INDICATORS (Hero Section)
             { name: 'wolf_poe', statusEl: document.getElementById('wolf-status'), platform: 'twitch' },
             { name: 'lethalxjoker', statusEl: document.getElementById('joker-status'), platform: 'twitch' },
             
-            // Kick Status is Mocked/Manual Check (no simple public API key access)
-            { name: 'wolf-poe', statusEl: null, platform: 'kick', manualCheck: true },
-            { name: 'lethalxjoker', statusEl: null, platform: 'kick', manualCheck: true },
+            // BUTTON STATUS INDICATORS (Streams Section)
+            // Twitch
+            { name: 'wolf_poe', statusEl: document.getElementById('wolf-twitch-button-status'), platform: 'twitch' },
+            { name: 'lethalxjoker', statusEl: document.getElementById('joker-twitch-button-status'), platform: 'twitch' },
 
-            // Social Statuses (Mocked - APIs are complex and require backend/dedicated service)
-            { name: 'wolfpoeofficial', statusEl: document.getElementById('wolf-tiktok-status'), platform: 'tiktok' },
-            { name: 'wolfpoeofficial', statusEl: document.getElementById('wolf-youtube-status'), platform: 'youtube' },
-            { name: 'lethaljoker', statusEl: document.getElementById('joker-tiktok-status'), platform: 'tiktok' },
-            { name: 'itslethaljokergaming', statusEl: document.getElementById('joker-youtube-status'), platform: 'youtube' },
+            // Kick (Mocked)
+            { name: 'wolf-poe', statusEl: document.getElementById('wolf-kick-button-status'), platform: 'kick', manualCheck: true },
+            { name: 'lethalxjoker', statusEl: document.getElementById('joker-kick-button-status'), platform: 'kick', manualCheck: true },
+
+            // Social Statuses (Mocked - TikTok, YouTube)
+            { name: 'wolfpoeofficial', statusEl: document.getElementById('wolf-tiktok-button-status'), platform: 'tiktok' },
+            { name: 'wolfpoeofficial', statusEl: document.getElementById('wolf-youtube-button-status'), platform: 'youtube' },
+            { name: 'lethaljoker', statusEl: document.getElementById('joker-tiktok-button-status'), platform: 'tiktok' },
+            { name: 'itslethaljokergaming', statusEl: document.getElementById('joker-youtube-button-status'), platform: 'youtube' },
         ];
 
         function setStatus(elementId, isLive) {
@@ -607,13 +610,8 @@
                     isLive = false; 
                 }
 
-                // Apply status to avatar indicators (Hero section)
-                if (channel.platform === 'twitch' && channel.statusEl) {
-                    setStatus(channel.statusEl.id, isLive);
-                }
-
-                // Apply status to social links (Community section)
-                if (channel.platform !== 'twitch' && channel.statusEl) {
+                // Apply status to indicators
+                if (channel.statusEl) {
                     setStatus(channel.statusEl.id, isLive);
                 }
                 
