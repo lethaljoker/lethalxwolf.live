@@ -176,6 +176,22 @@
             width: 100%;
             height: 300px;
         }
+        
+        /* Placeholder styling for non-embedded content */
+        .placeholder-content {
+            background-color: #2a2a2a;
+            border: 1px dashed var(--primary-color);
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ccc;
+            border-radius: 0.5rem;
+            font-style: italic;
+            text-align: center;
+            padding: 1rem;
+        }
+
 
         /* Community/Social Media links */
         .social-link-card {
@@ -491,9 +507,63 @@
                     </iframe>
                 </div>
             </div>
+            
+            <!-- NEW: Recent TikTok Clips -->
+            <div class="tiktok-clips mb-12 p-6 bg-gray-900 rounded-xl shadow-2xl">
+                <h3 class="text-3xl font-bold mb-6 text-accent-color">Recent TikTok Clips</h3>
+                <div class="clips-container">
+                    <!-- TikTok Clip 1 (Wolf Poe) -->
+                    <div class="placeholder-content">
+                        TikTok Clip Placeholder (Wolf Poe)
+                        <br><small>Embed your latest TikTok clip here.</small>
+                    </div>
+                    
+                    <!-- TikTok Clip 2 (LethalXJoker) -->
+                    <div class="placeholder-content">
+                        TikTok Clip Placeholder (LethalXJoker)
+                        <br><small>Embed your latest TikTok clip here.</small>
+                    </div>
+                </div>
+            </div>
 
-            <!-- Social Media Listings (from community.html) -->
-            <!-- NOTE: TikTok and YouTube links MOVED to Streams section. Keeping Discord CTA and other community info here if expanded later. -->
+            <!-- NEW: Recent YouTube Videos -->
+            <div class="youtube-videos mb-12 p-6 bg-gray-900 rounded-xl shadow-2xl">
+                <h3 class="text-3xl font-bold mb-6 text-accent-color">Recent YouTube Videos</h3>
+                <div class="clips-container">
+                    <!-- YouTube Video 1 (Wolf Poe) -->
+                    <div class="placeholder-content">
+                        YouTube Video Placeholder (Wolf Poe)
+                        <br><small>Embed your latest full-length video here.</small>
+                    </div>
+                    
+                    <!-- YouTube Video 2 (LethalXJoker) -->
+                    <div class="placeholder-content">
+                        YouTube Video Placeholder (LethalXJoker)
+                        <br><small>Embed your latest full-length video here.</small>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- NEW: Recent YouTube Shorts -->
+            <div class="youtube-shorts mb-12 p-6 bg-gray-900 rounded-xl shadow-2xl">
+                <h3 class="text-3xl font-bold mb-6 text-accent-color">Recent YouTube Shorts</h3>
+                <div class="clips-container">
+                    <!-- YouTube Short 1 (Wolf Poe) -->
+                    <div class="placeholder-content">
+                        YouTube Short Placeholder (Wolf Poe)
+                        <br><small>Embed your latest YouTube Short here.</small>
+                    </div>
+                    
+                    <!-- YouTube Short 2 (LethalXJoker) -->
+                    <div class="placeholder-content">
+                        YouTube Short Placeholder (LethalXJoker)
+                        <br><small>Embed your latest YouTube Short here.</small>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Social Media Listings (Discord CTA only) -->
             <div class="text-center p-6 bg-gray-900 rounded-xl shadow-2xl">
                  <p class="text-gray-400">Join our Discord for direct community engagement and announcements!</p>
                  <div class="mt-4">
