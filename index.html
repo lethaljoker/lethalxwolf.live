@@ -14,7 +14,8 @@
             --accent-color: #ff00ff; /* Bright magenta for highlights/status */
             --twitch-color: #6441a5;
             --kick-color: #00d65b;
-            --live-color: #e82c5e; /* Twitch Red/Live status */
+            --live-color: #00d65b; /* Using kick green for general live status */
+            --offline-color: #dc2626; /* Bright Red for Offline Status */
         }
 
         /* Basic styling for the body and fonts */
@@ -83,13 +84,14 @@
         }
 
         .status-indicator.offline {
-            background-color: #666; /* Gray/Red for offline */
+            /* CHANGED to Bright Red for clear Offline status */
+            background-color: var(--offline-color); 
         }
 
         .status-indicator.live {
-            /* Using Kick green for consistency with the button color */
-            background-color: var(--kick-color); 
-            box-shadow: 0 0 8px var(--kick-color);
+            /* Green for live across all platforms */
+            background-color: var(--live-color); 
+            box-shadow: 0 0 8px var(--live-color);
         }
         
         /* Status indicator for social links */
@@ -102,11 +104,12 @@
             vertical-align: middle;
         }
         .social-status-indicator.offline {
-            background-color: #666;
+            /* CHANGED to Bright Red for clear Offline status */
+            background-color: var(--offline-color);
         }
         .social-status-indicator.live {
-            background-color: var(--kick-color);
-            box-shadow: 0 0 5px var(--kick-color);
+            background-color: var(--live-color);
+            box-shadow: 0 0 5px var(--live-color);
         }
 
         /* Floating Menu Button Styles */
